@@ -1,0 +1,62 @@
+body{
+    background-color: rgb(225, 225, 225);
+}
+
+.Caixa_de_Alinhamento{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    
+}
+#ajuste1{
+    /*padding: 25px*/
+}
+
+#Caixa_Pesquisa1{
+    width: 500px;
+    height: 50px;
+    border: 2px double  rgb(255, 255, 255);
+    border-radius: 50px;
+    padding: 2px;
+    
+}
+
+#Caixa_Pesquisa2{
+    width: auto;
+    height: 40px;
+    background-color: rgb(255, 255, 255);
+    border: 5px double  rgb(255, 255, 255);
+    border-radius: 50px;
+    
+    padding: 0 10px 0 10px;
+    text-align: left;
+    display: flex;
+    align-items: center;
+
+}
+
+#Pesquisa{
+    border: 0 solid;
+    width: 400px;
+}
+
+
+
+#Caixa_Pokemon{
+    width: 80%;
+    height: 480px;
+    border: 5px solid  rgb(255, 255, 255);
+    border-radius: 50px;
+    
+}
+
+
+
+.W_space1{
+    padding-bottom: 70px;
+}
+.W_space2{
+    padding-bottom: 20px;
+}
