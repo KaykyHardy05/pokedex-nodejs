@@ -49,7 +49,13 @@ body{
     height: 480px;
     border: 5px solid  rgb(255, 255, 255);
     border-radius: 50px;
+    padding:20px;
     
+}
+
+.container{
+    width: 50px;
+    height: 50px;
 }
 
 
