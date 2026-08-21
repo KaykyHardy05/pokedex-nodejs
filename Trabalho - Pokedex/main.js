@@ -1,5 +1,5 @@
 'use strict';
-let catapimbas
+
 
 /*
     pesquisar por:
@@ -11,78 +11,76 @@ let catapimbas
         nome   , imagem (alterar entre shiny's),  tipo  , região , geração (primeira aparição) , descrição,
         ( ✔ ) ,  ( ✔ )                        , ( ✔ )  , ( ✔ ) ,  ( ✔ )                      ,  ( ✖ )
 */
+let catapimbas;
+let pagina=0;
+
 
 
 const buscaApi = async() => {
+    document.getElementById("Caixa_Pokemon").innerHTML = "";
+
     const nomePokemon = document.getElementById('Pesquisa').value;
-    var teste
-    
+    var teste;
+
     if(nomePokemon === ""){
-        const url = `http://pokeapi.co/api/v2/pokemon?limit=100000&offset=0`;
-        teste = url
+        teste=await carregarJson(`/pokemon?limit=${24}&offset=${24*(pagina)}`);
         console.log("SEM Comando");
     }
     else{
-        const url = `http://pokeapi.co/api/v2/pokemon/${nomePokemon}`;
-        teste = url
+        teste=await carregarJson("/pokemon/"+nomePokemon);
         console.log("Comando pesquisa: "+nomePokemon);
+        console.log(`http://pokeapi.co/api/v2/pokemon${"/"+nomePokemon}`)
     }
+    
+    
 
-    console.log("Url: "+teste);
-    const dados = await fetch(teste);
-    const pokemon = await dados.json();
+    if(teste.results){
+        for (const pokemonResults of teste.results) {
+            const pokemon2= await carregarJson("/"+pokemonResults.name);
+            console.log(`carregando -> ${pokemon2.name}`)
 
-    if(pokemon.results){
-        for (const pokemonResults of pokemon.results) {
-            const url2 = `http://pokeapi.co/api/v2/pokemon/${pokemonResults.name}`;
-            const dados2 = await fetch(url2);
-            const pokemon2 = await dados2.json();
-            
             const informacao2={
                 ["nome"]:pokemon2.name,
                 ["imagem"]:{"normal":pokemon2.sprites.front_default,"shiny":pokemon2.sprites.front_shiny},
                 ["tipagem"]:{"tipo1":pokemon2.types[0].type['name'],"tipo2":pokemon2.types[1]?.type['name']},
                 ["regiao"]:pokemon2.encounters,
                 ["geracao"]:pokemon2.game_indices[0].version["name"],
-                //["descricao"]:
             } 
 
-            //console.log(informacao2.tipagem);
             document.getElementById("Caixa_Pokemon").innerHTML += criarContainer(informacao2);
-    
+
         }
     }
-/*
-const pokemonResults = pokemon.results[0];
-console.log(pokemonResults.url)    
-    const resultsDados = await fetch(pokemonResults.url);
-    const resultsPokemon = await resultsDados.json();
-    console.log(resultsPokemon)
-*/
 
         const informacao={
-            ["nome"]:pokemon.name,
-            ["imagem"]:{"normal":pokemon.sprites.front_default,"shiny":pokemon.sprites.front_shiny},
-            ["tipagem"]:{"tipo1":pokemon.types[0].type['name'],"tipo2":pokemon.types[1]?.type['name']},
-            ["regiao"]:pokemon.encounters,
-            ["geracao"]:pokemon.game_indices[0].version["name"],
-            //["descricao"]:
+            ["nome"]:teste.name,
+            ["imagem"]:{"normal":teste.sprites.front_default,"shiny":teste.sprites.front_shiny},
+            ["tipagem"]:{"tipo1":teste.types[0].type['name'],"tipo2":teste.types[1]?.type['name']},
+            ["regiao"]:teste.encounters,
+            ["geracao"]:teste.game_indices[0].version["name"],
         } 
 
-        //console.log(informacao.name);
         document.getElementById("Caixa_Pokemon").innerHTML += criarContainer(informacao);
 
 }
 
+async function carregarJson(Pokemon){
+    const url = `http://pokeapi.co/api/v2${Pokemon}`;
+
+    const dados = await fetch(url);
+    const jason = await dados.json();
+    return jason;
+}
+
+
 
 function criarContainer(info){
-    var cor1;
-    var cor2;
-    console.log(info.tipagem);
     return `
-        <div class="container" style="backgrounds: linear-gradient(45deg, ${cores(info.tipagem.tipo1)},  ${cores(info.tipagem.tipo2)} );">
-            <img src="${info.imagem.normal}" alt="${info.nome}" style="width:150px;height:150px;">
-            <p>${info.nome}</p>
+        <div class="container" style="background: linear-gradient(145deg, ${cores(info.tipagem.tipo1)}47%, rgba(0, 0, 0, 1)47%,rgba(0, 0, 0, 1)53%,   ${cores(info.tipagem.tipo2?info.tipagem.tipo2:info.tipagem.tipo1)}53%)">
+        <div style="background: radial-gradient(rgba(255, 255, 255, 1)20%,rgba(0, 0, 0, 1)20%,rgba(0, 0, 0, 0)25%,rgba(0, 0, 0, 0)25%); width:150px; height:150px;">
+                <img src="${info.imagem.normal}" alt="${info.nome}" style="width:150px;height:150px;">
+                <p>${info.nome}</p>
+            </div>
         </div>
     `;
 }
@@ -108,11 +106,53 @@ function cores(x){
         'steel'    : 'rgba(170, 170, 187, 1)',
         'dark'     : 'rgba(119, 85, 68, 1)'
     };
-    console.log(x); 
-    console.log(coresPorElemento[x]); 
-
-
     
+    return coresPorElemento[x];
+}
+
+
+function retroceder(){
+    if(pagina > 0){
+        pagina--;
+        console.log(`passando a URL-> '?limit=${24}&offset=${24*(pagina)}'`)
+        document.getElementById("paginaSelector").value = pagina;
+        buscaApi();
+    }
+}
+
+function paginaIdentifier(){
+    const seletor = document.getElementById("paginaSelector").value;
+    pagina = seletor;
+    buscaApi();
+}
+
+function avancar(){
+    
+    if(pagina > 1351){
+        pagina =0;
+    }
+    pagina++;
+    console.log(`passando a URL-> '?limit=${24}&offset=${24*(pagina-1)}'`)
+    document.getElementById("paginaSelector").value = pagina;
+    buscaApi();
+}
+
+
+async function filtros(){
+    const listaTipos= await carregarJson("/type")
+    const div=document.getElementById("Caixa_Filtro");
+    document.getElementById("botao_Filtro_off").id= "botao_Filtro_on";
+
+    div.style.height="500px";
+    div.style.width="500px";
+
+    for (const tipos of listaTipos.results) {
+        div.innerHTML+=`
+                <div class="Filtro_Elemento" style="background-color:${cores(tipos.name)}">
+                    ${tipos.name}
+                </div>
+            `;
+    }
 }
 
 buscaApi();
