@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="reset.css">
+    <title>Pokedex - Menu</title>
+</head>
+<body>
+    <div class="W_space1"></div>
+     
+    <div class='Caixa_de_Alinhamento'>
+        <button onclick="retroceder()" class="paginaSelector" style="border-left: 2px solid black;border-radius: 10px 0 0 10px ;">◀</button>
+        <input  type="number"          class="paginaSelector" value="0" min="0" max="42" onfocusout="paginaIdentifier()" style="border-left: 1px solid rgba(128,128,128,0.35);border-right: 1px solid rgba(128,128,128,0.35);">
+        <button onclick="avancar()"    class="paginaSelector" style="border-right: 2px solid black;border-radius: 0 10px 10px 0;">▶</button>
+        
+
+        
+        <div id="Caixa_Filtro">
+            <button id="Botao_Filtro_off" class="cabecalho_Filtros" onclick="filtros()">filtros</button>
+        </div>
+        
+        <div id='Caixa_Pesquisa1'>
+            <div id='Caixa_Pesquisa2'>
+                <input type="search" onsearch="buscaApi()" id='Pesquisa' name='Pesquisa' placeholder="🔎Pesquisar" maxlength="35" width="auto">
+            </div>
+        </div>
+
+    </div>
+
+    <div class="W_space2"></div>
+
+    <div class='Caixa_de_Alinhamento' id='ajuste1'>
+        <div id='Caixa_Pokemon' >
+        </div>
+    </div>
+    <script src="main.js"></script>
+</body>
+</html>
