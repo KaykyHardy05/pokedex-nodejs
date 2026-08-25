@@ -58,6 +58,7 @@ body{
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     grid-template-rows: repeat(15, 1fr);
+    row-gap: 2px;
 
 
 }
@@ -133,11 +134,11 @@ body{
 }
 
 .filtro_Elemento{
-    width: 65px;
-    height: 18px;
+    width: 75px;
+    height: 25px;
 
     border: 3px solid rgba(35,35,35,0.5);
-    border-radius: 15px;
+    /*border-radius: 15px;*/
     text-align: center;
 
 }
