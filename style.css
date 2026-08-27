@@ -111,6 +111,22 @@ body{
     justify-content: center;
 }
 
+.pokeballInner{
+    background: radial-gradient(rgba(255, 255, 255, 1  )20%,
+                                rgba(  0,   0,   0, 1  )20%,
+                                rgba(  0,   0,   0, 0  )25%,
+                                rgba(  0,   0,   0, 0  )55%,
+                                rgba(  0,   0,   0, 0.5)71%,
+                                rgba(  0,   0,   0, 0  )71%);
+    width:150px;
+    height:150px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+
 .paginaSelector{
     width: 25px;
     text-align: center;

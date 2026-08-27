@@ -12,7 +12,8 @@
         ( ✔ ) ,  ( ✔ )                        , ( ✔ )  , ( ✔ ) ,  ( ✔ )                      ,  ( ✖ )
 */
 let catapimbas;
-let pagina=0;
+let pagina=document.getElementById("pageN").value;
+
 const fifoFiltroTipo=[null,null]
 const filtroTipo= {        
     'grass'    : true,
@@ -32,77 +33,12 @@ const filtroTipo= {
     'dragon'   : true,
     'fairy'    : true,
     'steel'    : true,
-    'dark'     : true}
-
-
-const buscaApi = async(filtroPorTipo=[null,null]) => {
-    document.getElementById("Caixa_Pokemon").innerHTML = "";
-
-    const nomePokemon = document.getElementById('Pesquisa').value;
-    var teste;
-
-    if(nomePokemon === ""){
-        teste=await carregarJson(`/pokemon?limit=${24}&offset=${24*(pagina)}`);
-        console.log("SEM Comando");
-    }
-    else{
-        teste=await carregarJson("/pokemon/"+nomePokemon);
-        console.log("Comando pesquisa: "+nomePokemon);
-        console.log(`http://pokeapi.co/api/v2/pokemon${"/"+nomePokemon}`)
-    }
-    
-    
-
-    if(teste.results){
-        for (const pokemonResults of teste.results) {
-            const pokemon2= await carregarJson("/pokemon/"+pokemonResults.name);
-            //console.log(`carregando -> ${pokemon2.name}`)
-
-            const informacao2={
-                ["nome"]:pokemon2.name,
-                ["imagem"]:{"normal":pokemon2.sprites.front_default,"shiny":pokemon2.sprites.front_shiny},
-                ["tipagem"]:{"tipo1":pokemon2.types[0].type['name'],"tipo2":pokemon2.types[1]?.type['name']},
-                ["regiao"]:pokemon2.encounters,
-                ["geracao"]:pokemon2.game_indices[0].version["name"],
-            } 
-            
-            document.getElementById("Caixa_Pokemon").innerHTML += criarContainer(informacao2);
-
-        }
-    }
-
-        const informacao={
-            ["nome"]:teste.name,
-            ["imagem"]:{"normal":teste.sprites.front_default,"shiny":teste.sprites.front_shiny},
-            ["tipagem"]:{"tipo1":teste.types[0].type['name'],"tipo2":teste.types[1]?.type['name']},
-            ["regiao"]:teste.encounters,
-            ["geracao"]:teste.game_indices[0].version["name"],
-        } 
-
-        document.getElementById("Caixa_Pokemon").innerHTML += criarContainer(informacao);
-
-}
-
-async function carregarJson(Pokemon){
-    const url = `http://pokeapi.co/api/v2${Pokemon}`;
-
-    const dados = await fetch(url);
-    const jason = await dados.json();
-    return jason;
+    'dark'     : true
 }
 
 
 
-function criarContainer(info){
-    return `
-        <div class="container" style="background: linear-gradient(145deg, ${cores(info.tipagem.tipo1)}47%, rgba(0, 0, 0, 1)47%,rgba(0, 0, 0, 1)53%,   ${cores(info.tipagem.tipo2?info.tipagem.tipo2:info.tipagem.tipo1, .65)}53%)">
-        <div style="background: radial-gradient(rgba(255, 255, 255, 1)20%,rgba(0, 0, 0, 1)20%,rgba(0, 0, 0, 0)25%,rgba(0, 0, 0, 0)55%,rgba(0, 0, 0, 0.5)71%,rgba(0, 0, 0, 0)71%); width:150px; height:150px;">
-                <img src="${info.imagem.normal}" alt="${info.nome}" style="width:150px;height:150px;">
-                <p>${info.nome}</p>
-            </div>
-        </div>
-    `;
-}
+
 
 function cores(x, alphaValue=1){
     let coresPorElemento = {
@@ -131,31 +67,138 @@ function cores(x, alphaValue=1){
 }
 
 
+
+
+
+const buscaApi = async() => {
+
+    console.log(`buscaApi([${fifoFiltroTipo[0]},${fifoFiltroTipo[1]}])`)
+    document.getElementById("Caixa_Pokemon").innerHTML = "";
+
+    const nomePokemon = document.getElementById('Pesquisa').value;
+    var teste;
+
+    if(nomePokemon === ""){
+        if(fifoFiltroTipo[1]!=null){
+            teste=await carregarJson(`/type/${fifoFiltroTipo[1]}`);
+        }else{
+            teste=await carregarJson(`/pokemon?limit=24&offset=${24*(pagina)}`);
+        }
+        console.log("SEM Comando");
+    }
+    else{
+        teste=await carregarJson("/pokemon/"+nomePokemon);
+        console.log("Comando pesquisa: "+nomePokemon);
+        console.log(`http://pokeapi.co/api/v2/pokemon${"/"+nomePokemon}`)
+    }
+    
+    
+
+    if(teste.results){
+        for (const pokemonResults of teste.results) {
+            const pokemon= await carregarJson("/pokemon/"+pokemonResults.name);
+            
+            document.getElementById("Caixa_Pokemon").innerHTML += criarContainer(infoPokemons(pokemon)); 
+        }
+    }
+    if(teste.pokemon){
+        var i=0;
+        for (const pokemonOnTypes of teste.pokemon) {
+            console.log(`${i} >= ${24*(pagina+1)} = ${i>= 24*(pagina+1)}\n${i} <= ${24*(pagina)} = ${i <= 24*pagina}\n${i>= 24*(pagina+1) || i < 24*pagina}`)
+            if(i>= 24*(pagina+1) || i < 24*pagina){i++;continue;}
+            i++
+
+            const pokemon= await carregarJson(`/pokemon/${pokemonOnTypes.pokemon.name}`);
+            if(fifoFiltroTipo[0]!=null){
+                console.log("Tipo1: "+infoPokemons(pokemon).tipagem.tipo1);
+                console.log("Tipo2: "+infoPokemons(pokemon).tipagem.tipo2);
+                if((infoPokemons(pokemon).tipagem.tipo1 != fifoFiltroTipo[0] || infoPokemons(pokemon).tipagem.tipo1 != fifoFiltroTipo[1]) && 
+                   (infoPokemons(pokemon).tipagem.tipo2 != fifoFiltroTipo[0] || infoPokemons(pokemon).tipagem.tipo2 != fifoFiltroTipo[1])){continue;}
+            }
+
+            document.getElementById("Caixa_Pokemon").innerHTML += criarContainer(infoPokemons(pokemon)); 
+        }
+    }    
+    else{
+        document.getElementById("Caixa_Pokemon").innerHTML += criarContainer(infoPokemons(teste));
+    }
+
+}
+
+
+
+
+
+let infoPokemons = function(Pokemon){
+    return {
+            ["nome"]:Pokemon.name,
+            ["imagem"]:{"normal":Pokemon.sprites.other["official-artwork"]["front_default"],"shiny":Pokemon.sprites.other["official-artwork"]["front_shiny"]},
+            ["tipagem"]:{"tipo1":Pokemon.types[0].type['name'],"tipo2":Pokemon.types[1]?.type['name']},
+            ["regiao"]:Pokemon.encounters,
+            ["geracao"]:Pokemon.game_indices[0].version["name"],
+        };
+};
+
+
+
+
+
+async function carregarJson(Pokemon){
+    const url = `http://pokeapi.co/api/v2${Pokemon}`;
+
+    const dados = await fetch(url);
+    const jason = await dados.json();
+    return jason;
+}
+
+
+
+
+
+function criarContainer(info){
+    return `
+        <div class="container" style="background: linear-gradient(145deg, ${cores(info.tipagem.tipo1)}47%, rgba(0, 0, 0, 1)47%,rgba(0, 0, 0, 1)53%,   ${cores(info.tipagem.tipo2?info.tipagem.tipo2:info.tipagem.tipo1, .65)}53%)">
+        <div class="pokeballInner">
+                <img src="${info.imagem.normal}" alt="${info.nome}" style="width:120px;height:120px;">
+                
+            </div>
+            <p>${info.nome}</p>
+        </div>
+    `;
+}
+
+
+
+
+
+
 function retroceder(){
     if(pagina > 0){
         pagina--;
-        console.log(`passando a URL-> '?limit=${24}&offset=${24*(pagina)}'`)
-        document.getElementById("paginaSelector").value = pagina;
-        buscaApi();
+    }else{
+        pagina= Math.floor(1025/24);    
     }
+    document.getElementById("pageN").value = pagina;
+    buscaApi();
 }
 
 function paginaIdentifier(){
-    const seletor = document.getElementById("paginaSelector").value;
+    const seletor = document.getElementById("pageN").value;
     pagina = seletor;
     buscaApi();
 }
 
-function avancar(){
-    
-    if(pagina > 1351){
+function avancar(){    
+    if(pagina >= Math.floor(1025/24)){
         pagina =0;
-    }
-    pagina++;
-    console.log(`passando a URL-> '?limit=${24}&offset=${24*(pagina-1)}'`)
-    document.getElementById("paginaSelector").value = pagina;
+    }else{pagina++;}
+    document.getElementById("pageN").value = pagina;
     buscaApi();
 }
+
+
+
+
 
 
 async function filtros(){
@@ -163,7 +206,6 @@ async function filtros(){
     const div=document.getElementById("Caixa_Filtro");
     document.getElementById("Botao_Filtro_off").id= "Botao_Filtro_on";
 
-    
     div.style.width="500px";
     div.style.height="350px";
 
@@ -177,38 +219,48 @@ async function filtros(){
     }
 }
 
+
+
+
+
 function inverterValorElemento(x){
     // Verifica (as 2 casas) para ver se o elemento 'x' ja esta selecionado.
     // {TRUE} :> remove tal elemento 'x', e adiciona null a casa 0
-    for(var i=0;i<fifoFiltroTipo.length;i++){
-        if(fifoFiltroTipo[i] == x){
-            fifoFiltroTipo.splice(i,1);
-            fifoFiltroTipo.splice(0,0,null);
+    if(fifoFiltroTipo[0] == x ){
+        fifoFiltroTipo.splice(0,1,null);
+    }
+    else if(fifoFiltroTipo[1] == x ){
+        fifoFiltroTipo.splice(1,1,null);
+    }else{
+        // Remove o primeiro elemento
+        fifoFiltroTipo.splice(0,1);
+        
+        // Substitui o segundo elemento se 'filtroTipo' do elemento 'x' for TRUE por 'x'
+        fifoFiltroTipo.splice(1,1,x);
+        //console.log(`pos adicionar: {${fifoFiltroTipo[0]}, ${fifoFiltroTipo[1]}}`)
+        
+        // Os elementos que estiverem dentro de 'fifoFiltroTipo' tem o valor TRUE, ao contrario sera FALSE
+        for(var i in filtroTipo){
+            if(i == fifoFiltroTipo[0] || i == fifoFiltroTipo[1]){
+                console.log(`filtroTipo[${i}] = true;`)
+                filtroTipo[i]= true;
+
+            }else{
+                filtroTipo[i]= false;
+            }
+            
         }
     }
-
-    // Remove o primeiro elemento
-    fifoFiltroTipo.splice(0,1);
-    // Substitui o segundo elemento se 'filtroTipo' do elemento 'x' for TRUE por 'x'
-    fifoFiltroTipo.splice(1,1,filtroTipo[x]?x:null);
-    
-    // Os elementos que estiverem dentro de 'fifoFiltroTipo' tem o valor TRUE, ao contrario sera FALSE
-    for(var i in filtroTipo){
-        console.log((i == fifoFiltroTipo[0] || i == fifoFiltroTipo[1]))
-        if(i == fifoFiltroTipo[0] || i == fifoFiltroTipo[1]){
-            filtroTipo[x]= true;
-        }
-        filtroTipo[i]= false;
-    }
-
-
-
-    console.log(fifoFiltroTipo)
     
     atualizarAparenciaFiltroTipos()
 
-    buscaApi({fifoFiltroTipo});
+    buscaApi([fifoFiltroTipo[0],fifoFiltroTipo[1]]);
 }
+
+
+
+
+
 
 function atualizarAparenciaFiltroTipos(){
     for(var i in filtroTipo){
