@@ -102,21 +102,21 @@ const buscaApi = async() => {
         }
     }
     if(teste.pokemon){
-        var i=0;
-        for (const pokemonOnTypes of teste.pokemon) {
-            console.log(`${i} >= ${24*(pagina+1)} = ${i>= 24*(pagina+1)}\n${i} <= ${24*(pagina)} = ${i <= 24*pagina}\n${i>= 24*(pagina+1) || i < 24*pagina}`)
-            if(i>= 24*(pagina+1) || i < 24*pagina){i++;continue;}
-            i++
-
-            const pokemon= await carregarJson(`/pokemon/${pokemonOnTypes.pokemon.name}`);
+        for(let i=24*pagina,x=0; i<teste.pokemon.length;i++){
+            if(x>=24){continue}
+            const pokemon= await carregarJson(`/pokemon/${teste.pokemon[i].pokemon.name}`);
+            
             if(fifoFiltroTipo[0]!=null){
-                console.log("Tipo1: "+infoPokemons(pokemon).tipagem.tipo1);
-                console.log("Tipo2: "+infoPokemons(pokemon).tipagem.tipo2);
-                if((infoPokemons(pokemon).tipagem.tipo1 != fifoFiltroTipo[0] || infoPokemons(pokemon).tipagem.tipo1 != fifoFiltroTipo[1]) && 
-                   (infoPokemons(pokemon).tipagem.tipo2 != fifoFiltroTipo[0] || infoPokemons(pokemon).tipagem.tipo2 != fifoFiltroTipo[1])){continue;}
+                if(infoPokemons(pokemon).tipagem.tipo1 == teste.name){
+                    if(!(infoPokemons(pokemon).tipagem.tipo2 == fifoFiltroTipo[0] || infoPokemons(pokemon).tipagem.tipo2 == fifoFiltroTipo[1])){continue;}
+                }
+                if(infoPokemons(pokemon).tipagem.tipo2 == teste.name){
+                    if(!(infoPokemons(pokemon).tipagem.tipo1 == fifoFiltroTipo[0] || infoPokemons(pokemon).tipagem.tipo1 == fifoFiltroTipo[1])){continue;}
+                }
             }
-
-            document.getElementById("Caixa_Pokemon").innerHTML += criarContainer(infoPokemons(pokemon)); 
+            
+            document.getElementById("Caixa_Pokemon").innerHTML += criarContainer(infoPokemons(pokemon));
+            x++;
         }
     }    
     else{
@@ -155,7 +155,7 @@ async function carregarJson(Pokemon){
 
 
 
-function criarContainer(info){
+function criarContainer(info){console.log("Container Criado!")
     return `
         <div class="container" style="background: linear-gradient(145deg, ${cores(info.tipagem.tipo1)}47%, rgba(0, 0, 0, 1)47%,rgba(0, 0, 0, 1)53%,   ${cores(info.tipagem.tipo2?info.tipagem.tipo2:info.tipagem.tipo1, .65)}53%)">
         <div class="pokeballInner">
@@ -204,18 +204,27 @@ function avancar(){
 async function filtros(){
     const listaTipos= await carregarJson("/type")
     const div=document.getElementById("Caixa_Filtro");
-    document.getElementById("Botao_Filtro_off").id= "Botao_Filtro_on";
 
-    div.style.width="500px";
-    div.style.height="350px";
+    if(document.getElementById("Botao_Filtro_off")){
+        document.getElementById("Botao_Filtro_off").id= "Botao_Filtro_on";
 
-    for (const tipos of listaTipos.results) {
-        if(tipos.name == "stellar" || tipos.name == "unknown"){continue}
-        div.innerHTML+=`
-                <button class="filtro_Elemento" id="filtro_${tipos.name}" onclick="inverterValorElemento('${tipos.name}')" style="background-color:${cores(filtroTipo[tipos.name]?tipos.name:'off')}">
-                    ${tipos.name}
-                </button>
-            `;
+        div.style.width="500px";
+        div.style.height="350px";
+
+        for (const tipos of listaTipos.results) {
+            if(tipos.name == "stellar" || tipos.name == "unknown"){continue}
+            div.innerHTML+=`
+                    <button class="filtro_Elemento" id="filtro_${tipos.name}" onclick="inverterValorElemento('${tipos.name}')" style="background-color:${cores(filtroTipo[tipos.name]?tipos.name:'off')}">
+                        ${tipos.name}
+                    </button>
+                `;
+    }
+    }else if(document.getElementById("Botao_Filtro_on")){
+        document.getElementById("Botao_Filtro_on").id= "Botao_Filtro_off";
+
+        div.style.width="50px";
+        div.style.height="25px";
+        div.innerHTML=`<button id="Botao_Filtro_off" class="cabecalho_Filtros" onclick="filtros()">filtros</button>`;
     }
 }
 
@@ -251,7 +260,12 @@ function inverterValorElemento(x){
             
         }
     }
-    
+
+    for(let i=0,x=0;i<filtroTipo.length;i++){
+        if(!fifoFiltroTipo[i]){x++}
+        if(x=filtroTipo.length){for(let valores of fifoFiltroTipo){!valores}}
+    }
+    console.log(fifoFiltroTipo)
     atualizarAparenciaFiltroTipos()
 
     buscaApi([fifoFiltroTipo[0],fifoFiltroTipo[1]]);
