@@ -9,7 +9,7 @@
     <title>Pokedex - Menu</title>
 </head>
 <body>
-    <div class="W_space1"></div>
+    
      
     <div class='Caixa_de_Alinhamento'>
         <button onclick="retroceder()"   class="paginaSelector" style="border-left: 2px solid black;border-radius: 10px 0 0 10px ;">◀</button>
@@ -20,13 +20,12 @@
         
         <div id="Caixa_Filtro">
             <button id="Botao_Filtro_off" class="cabecalho_Filtros" onclick="filtros()">filtros</button>
+            <div class="cabecalho_FiltroFill"></div>
+            <input type="search" onsearch="buscaApi()" id='Pesquisa' class="cabecalho_Filtro2" name='Pesquisa' placeholder="🔎Pesquisar" maxlength="35" width="auto">
         </div>
+        <div class="cabecalho_FiltroFill2">.</div>
         
-        <div id='Caixa_Pesquisa1'>
-            <div id='Caixa_Pesquisa2'>
-                <input type="search" onsearch="buscaApi()" id='Pesquisa' name='Pesquisa' placeholder="🔎Pesquisar" maxlength="35" width="auto">
-            </div>
-        </div>
+       
 
     </div>
 
@@ -38,4 +37,4 @@
     </div>
     <script src="main.js"></script>
 </body>
-</html>
+</html> 
