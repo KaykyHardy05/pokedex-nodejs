@@ -222,8 +222,8 @@ async function filtros(){
     }else if(document.getElementById("Botao_Filtro_on")){
         document.getElementById("Botao_Filtro_on").id= "Botao_Filtro_off";
 
-        div.style.width="530px";
-        div.style.height="25px";
+        div.style.width="500px";
+        div.style.height="34px";
         for(let tipos in filtroTipo){
             document.getElementById(`filtro_${tipos}`).remove();
         }
@@ -237,11 +237,16 @@ async function filtros(){
 function inverterValorElemento(x){
     // Verifica (as 2 casas) para ver se o elemento 'x' ja esta selecionado.
     // {TRUE} :> remove tal elemento 'x', e adiciona null a casa 0
+    console.log()
+    console.log(fifoFiltroTipo)
     if(fifoFiltroTipo[0] == x ){
         fifoFiltroTipo.splice(0,1,null);
+        console.log(fifoFiltroTipo)
     }
     else if(fifoFiltroTipo[1] == x ){
-        fifoFiltroTipo.splice(1,1,null);
+        fifoFiltroTipo.splice(1,1);
+        fifoFiltroTipo.splice(0,0,null);
+        console.log(fifoFiltroTipo)
     }else{
         // Remove o primeiro elemento
         fifoFiltroTipo.splice(0,1);
@@ -253,7 +258,7 @@ function inverterValorElemento(x){
         // Os elementos que estiverem dentro de 'fifoFiltroTipo' tem o valor TRUE, ao contrario sera FALSE
         for(var i in filtroTipo){
             if(i == fifoFiltroTipo[0] || i == fifoFiltroTipo[1]){
-                console.log(`filtroTipo[${i}] = true;`)
+               // console.log(`filtroTipo[${i}] = true;`)
                 filtroTipo[i]= true;
 
             }else{
@@ -262,11 +267,15 @@ function inverterValorElemento(x){
             
         }
     }
-
-    for(let i=0,x=0;i<filtroTipo.length;i++){
-        if(!fifoFiltroTipo[i]){x++}
-        if(x=filtroTipo.length){for(let valores of fifoFiltroTipo){!valores}}
+    console.log("entrando no For")
+    
+    for(let i=0,y=1;i<17;i++){
+    //    console.log(` - fifoFiltroTipo[${Object.keys(fifoFiltroTipo)}] = ${!fifoFiltroTipo[i]}`)
+        if(!fifoFiltroTipo[i]){y++}
+        
+        if(y==17){for(let valores in filtroTipo){filtroTipo[valores]=!filtroTipo[valores];console.log(`filtroTipo[${valores}]=${filtroTipo[valores]}`)}}
     }
+    console.log("saindo no For")
     console.log(fifoFiltroTipo)
     atualizarAparenciaFiltroTipos()
 

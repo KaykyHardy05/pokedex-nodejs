@@ -15,25 +15,32 @@ body{
 }
 */
 #Botao_Filtro_off{
-    border:0 hidden;
-    background-color: rgba(0,0,0,0);
+    border:2px solid rgba(  0,   0,   0, 0.5);
+    border-radius: 8px;
+    background-color: rgba(0,0,0,0.25);
     color: aliceblue;
     text-align: center;
     
-    border-right: 3px solid rgba(0, 0, 0, 0.25);
+}
+#Botao_Filtro_off:hover{
+    border:3px solid rgba(  0,   0,   0, 0.5);
+    border-radius: 11px;
+    color: rgb(196, 202, 207)
 }
 
-#Botao_Filtro_on{
-    border: 0 hidden;
-    background-color:rgba(37, 37, 41, 0.25);
-    color: aliceblue;
-    text-align: center;
-    
-    border-right: 3px solid rgba(0, 0, 0, 0.25);
-    border-bottom: 3px solid rgba(0, 0, 0, 0.25);
-    border-end-end-radius: 10px;
-    
 
+#Botao_Filtro_on{
+    border:2px solid rgba(  0,   0,   0, 0.5);
+    border-radius: 8px;
+    background-color: rgba(0,0,0,0.35);
+    color: aliceblue;;
+    text-align: center;
+
+}
+#Botao_Filtro_on:hover{
+    border:3px solid rgba(  0,   0,   0, 0.5);
+    border-radius: 11px;
+    color: rgb(196, 202, 207)
 }
 
 .cabecalho_Filtros{
@@ -41,27 +48,29 @@ body{
     grid-row: 1 / 2;
 }
 .cabecalho_FiltroFill{
+    border-left: 3px solid rgba(0, 0, 0, 0.25);
     grid-column: 2 / 3;
     grid-row: 1 / 2;
 }
 
 .cabecalho_FiltroFill2{
+    width: 100%;
     grid-column: 1 / -1;
     grid-row: 2 / 3;
-    background-color:black;
 }
 
 
 .cabecalho_Filtro2{
     width:400px;
     height:24px;
-    grid-column: 3 / -2;
+    margin-top: 4px;
+    grid-column: 3 / -1;
     grid-row: 1 / 2;
 }
 
 #Caixa_Filtro{
-    width: 580px;
-    height: 25px;
+    width: 500px;
+    height: 34px;
     
     background-color:rgba(37, 37, 41, 0.25);
     
@@ -76,6 +85,7 @@ body{
     display: grid;
     grid-template-columns: repeat(6, 1fr);
     grid-template-rows: repeat(15, 1fr);
+    place-items: center;
     row-gap: 2px;
 
 
@@ -106,8 +116,8 @@ body{
 
 #Pesquisa{
     border: 0 solid;
-    border-radius: 5px;
-    width: 400px;
+    border-radius: 15px;
+    width: 310px;
 }
 
 
@@ -148,6 +158,7 @@ body{
 
 .paginaSelector{
     width: 25px;
+    height: 75px;
     text-align: center;
 
     background-color: rgba(0,0,0,0);
@@ -173,7 +184,7 @@ body{
     height: 25px;
 
     border: 3px solid rgba(35,35,35,0.5);
-    /*border-radius: 15px;*/
+    border-radius: 2px;
     text-align: center;
 
 }
