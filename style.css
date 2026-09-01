@@ -266,12 +266,26 @@ input::-webkit-inner-spin-button {
     border: 2px solid rgba(134, 184, 160, 0.8); ;
     border-radius: 15%;
 
-    
+    grid-column: 1 / 6;
+    grid-row: 1 / 6;
 }
 #pokemonNamePopUp{
     font-size: 32px;
     text-transform: capitalize;
     
+    grid-column: 6 / 10;
+    grid-row: 1 / 2;
+}
+
+#typesPopUp{
+    grid-column: 11 / 14;
+    grid-row: 1 / 2;
+    
+}
+
+#descricaoPopUp{
+    grid-column: 1 / 6;
+    grid-row: 6 / 10;
 }
 .filtro_Elemento_PopUp{
     width: 75px;

@@ -311,6 +311,7 @@ async function popUpInfo(PokemonName) {
     console.log(info)
     document.getElementById("imagemPopUp").src= info.imagem.normal;
     document.getElementById("pokemonNamePopUp").innerHTML= info.nome;
+    document.getElementById("typesPopUp").innerHTML="";
     document.getElementById("typesPopUp").innerHTML+=`
                     <div class="filtro_Elemento_PopUp" id="filtro_${info.tipagem.tipo1}_PopUp" style="background-color:${cores(info.tipagem.tipo1)}">
                         ${info.tipagem.tipo1}
@@ -322,7 +323,8 @@ async function popUpInfo(PokemonName) {
                         ${info.tipagem.tipo2}
                     </div>
                 `;
-    }
+    }else{}
+    document.getElementById("filtro_undefined_PopUp").remove();
     document.getElementById("descricaoPopUp").innerHTML= "Descição"
 }
 
