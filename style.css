@@ -150,6 +150,9 @@ body{
     width:150px;
     height:150px;
 
+    border:none;
+    border-radius: 100%;
+
     display: flex;
     justify-content: center;
     align-items: center;
@@ -203,4 +206,78 @@ input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
+}
+
+
+#PopUpInfo{
+    width: 75%;
+    height: 70%;
+    background: rgba(165, 42, 42, 1);
+
+    position: fixed;
+    display: none;
+
+    margin: 6% 12.5%;
+
+    border: 10px solid rgba(82, 21, 21, 0.5);
+    border-radius: 10%;
+    
+    #Screen{
+        width: 88%;
+        height: 93%;
+        background-color: rgb(145, 199, 174);
+        
+        margin:1% 8%;
+
+        border: 6px solid rgba(123, 32, 32);
+        border-radius: 10%;
+
+        display: inline-block;
+    }
+
+
+    #ButtonDeco{
+        width: 80px;
+        height: 80px;
+        position: fixed;
+        background-color: rgba(165, 42, 42, 1);
+
+        margin: 11% -4.5%;
+
+        border: 20px double rgba(123, 32, 32);
+        border-radius: 100%;
+    }
+}
+
+#ShowInfo{
+    width: 85%;
+    height: 97.6%;
+    background-color: rgba(240, 248, 255, 0.);
+
+    margin: 0.5% 7.5%;
+
+    display:grid;
+    grid-template-columns: repeat(15, 1fr);
+    grid-template-rows: repeat(15, 1fr);
+}
+
+#imagemPopUp{
+    background-color: rgba(240, 248, 255, 0.2);
+    border: 2px solid rgba(134, 184, 160, 0.8); ;
+    border-radius: 15%;
+
+    
+}
+#pokemonNamePopUp{
+    font-size: 32px;
+    text-transform: capitalize;
+    
+}
+.filtro_Elemento_PopUp{
+    width: 75px;
+    height: 25px;
+
+    border: 3px solid rgba(35,35,35,0.5);
+    border-radius: 25px;
+    text-align: center;
 }

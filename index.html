@@ -10,7 +10,21 @@
 </head>
 <body>
     
-     
+    <div id="PopUpInfo">
+        <div id="Screen">
+            <div id="ButtonDeco">
+            </div>
+            <div id="ShowInfo">
+                <img src="https://i.pinimg.com/736x/d3/5c/7d/d35c7d74032c0bdb54361e43a6112647.jpg" id="imagemPopUp" alt="Personagem Bloqueado" style="height: 220px;width:220px;">
+                <h1 id="pokemonNamePopUp">Nome</h1>
+                <div id="typesPopUp" style="display: inline-flex;"></div>
+                <div id="descricaoPopUp"></div>
+            </div>
+        </div>
+        
+    </div>
+
+    
     <div class='Caixa_de_Alinhamento'>
         <button onclick="retroceder()"   class="paginaSelector" style="border-left: 2px solid black;border-radius: 10px 0 0 10px ;">◀</button>
         <input  type="number" id="pageN" class="paginaSelector" value="0" min="0" max="42" onfocusout="paginaIdentifier()" style="border-left: 1px solid rgba(128,128,128,0.35);border-right: 1px solid rgba(128,128,128,0.35);height: 69px;">
@@ -36,6 +50,9 @@
         <div id='Caixa_Pokemon' >
         </div>
     </div>
+
+
+    
     <script src="main.js"></script>
 </body>
 </html> 

@@ -136,6 +136,7 @@ let infoPokemons = function(Pokemon){
             ["tipagem"]:{"tipo1":Pokemon.types[0].type['name'],"tipo2":Pokemon.types[1]?.type['name']},
             ["regiao"]:Pokemon.encounters,
             ["geracao"]:Pokemon.game_indices[0].version["name"],
+            
         };
 };
 
@@ -155,13 +156,13 @@ async function carregarJson(Pokemon){
 
 
 
-function criarContainer(info){console.log("Container Criado!")
+function criarContainer(info){console.log("Container Criado para "+info.nome)
     return `
         <div class="container" style="background: linear-gradient(145deg, ${cores(info.tipagem.tipo1)}47%, rgba(0, 0, 0, 1)47%,rgba(0, 0, 0, 1)53%,   ${cores(info.tipagem.tipo2?info.tipagem.tipo2:info.tipagem.tipo1, .65)}53%)">
-        <div class="pokeballInner">
+        <button class="pokeballInner" onclick="popUpInfo('${info.nome}')">
                 <img src="${info.imagem.normal}" alt="${info.nome}" style="width:120px;height:120px;">
                 
-            </div>
+            </button>
             <p>${info.nome}</p>
         </div>
     `;
@@ -293,5 +294,37 @@ function atualizarAparenciaFiltroTipos(){
         document.getElementById(`filtro_${i}`).style.color = filtroTipo[i]?"black":"white";
     }
 }
+
+
+
+
+
+// Pop up de informações
+
+
+
+
+async function popUpInfo(PokemonName) {
+    console.log("call")
+    document.getElementById("PopUpInfo").style.display = "inline-block";
+    let info = infoPokemons(await carregarJson("/pokemon/"+PokemonName));
+    console.log(info)
+    document.getElementById("imagemPopUp").src= info.imagem.normal;
+    document.getElementById("pokemonNamePopUp").innerHTML= info.nome;
+    document.getElementById("typesPopUp").innerHTML+=`
+                    <div class="filtro_Elemento_PopUp" id="filtro_${info.tipagem.tipo1}_PopUp" style="background-color:${cores(info.tipagem.tipo1)}">
+                        ${info.tipagem.tipo1}
+                    </div>
+                `;
+    if(info.tipagem.tipo1 != info.tipagem.tipo2 && info.tipagem.tipo2 !==null){
+            document.getElementById("typesPopUp").innerHTML+=`
+                    <div class="filtro_Elemento_PopUp" id="filtro_${info.tipagem.tipo2}_PopUp" style="background-color:${cores(info.tipagem.tipo2)}">
+                        ${info.tipagem.tipo2}
+                    </div>
+                `;
+    }
+    document.getElementById("descricaoPopUp").innerHTML= "Descição"
+}
+
 
 buscaApi();
