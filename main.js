@@ -76,81 +76,85 @@ const buscaApi = async() => {
     document.getElementById("Caixa_Pokemon").innerHTML = "";
 
     const nomePokemon = document.getElementById('Pesquisa').value;
-    var teste;
+    var filtragem=false;
+    var mostrar=[24*pagina, 24*(pagina+1)];
+    var tipos;
 
     if(nomePokemon === ""){
-        if(fifoFiltroTipo[1]!=null){
-            teste=await carregarJson(`/type/${fifoFiltroTipo[1]}`);
+        
+        if(fifoFiltroTipo[1]!=null){// Verifica se tem filtros de Tipo de Pokemon
+            filtragem= true;
+            const url_Tipos = `http://pokeapi.co/api/v2/types/${fifoFiltroTipo[1]}/`;
+            const dadoTipos = await fetch(url_Tipos);
+            tipos = await dadoTipos.json();
+        }
+
+        if(tipos?.results){// Verifica se foi criado
+            for (const pokemonResults of tipos.results) {
+                if(mostrar[0] == mostrar[1]){continue}// limita a criação a 24 conteiners 
+                
+                var info = await infoPokemons(pokemonResults.name);
+                
+                // Se tiver um segundo Tipo ativo ele verifica se o pokemon 
+                // se encaixa e permite a criação do conteiner
+                if(fifoFiltroTipo[0]!=null){
+                
+                    // verifica em qual posicao esta o Tipo principal
+                    if(info.tipagem.tipo1 == tipos.name){ // 1°
+                        // verifica se o 2° Tipo é igual a um dos filtro
+                        if(!(info.tipagem.tipo2 == fifoFiltroTipo[0] ||
+                             info.tipagem.tipo2 == fifoFiltroTipo[1] ))
+                            {continue;}
+
+                    }
+                    if(info.tipagem.tipo2 == tipos.name){// 2°
+                        // verifica se a 1° Tipo é igual a um dos filtro
+                        if(!(info.tipagem.tipo1 == fifoFiltroTipo[0] ||
+                             info.tipagem.tipo1 == fifoFiltroTipo[1] ))
+                            {continue;}
+
+                    }
+                }
+                console.log(info.nome)
+                document.getElementById("Caixa_Pokemon").innerHTML += criarContainer(info);
+                mostrar[0]++;
+            }// Fin for()
         }else{
-            teste=await carregarJson(`/pokemon?limit=24&offset=${24*(pagina)}`);
-        }
-        console.log("SEM Comando");
-    }
-    else{
-        teste=await carregarJson("/pokemon/"+nomePokemon);
-        console.log("Comando pesquisa: "+nomePokemon);
-        console.log(`http://pokeapi.co/api/v2/pokemon${"/"+nomePokemon}`)
-    }
-    
-    
-
-    if(teste.results){
-        for (const pokemonResults of teste.results) {
-            const pokemon= await carregarJson("/pokemon/"+pokemonResults.name);
-            
-            document.getElementById("Caixa_Pokemon").innerHTML += criarContainer(infoPokemons(pokemon)); 
-        }
-    }
-    if(teste.pokemon){
-        for(let i=24*pagina,x=0; i<teste.pokemon.length;i++){
-            if(x>=24){continue}
-            const pokemon= await carregarJson(`/pokemon/${teste.pokemon[i].pokemon.name}`);
-            
-            if(fifoFiltroTipo[0]!=null){
-                if(infoPokemons(pokemon).tipagem.tipo1 == teste.name){
-                    if(!(infoPokemons(pokemon).tipagem.tipo2 == fifoFiltroTipo[0] || infoPokemons(pokemon).tipagem.tipo2 == fifoFiltroTipo[1])){continue;}
-                }
-                if(infoPokemons(pokemon).tipagem.tipo2 == teste.name){
-                    if(!(infoPokemons(pokemon).tipagem.tipo1 == fifoFiltroTipo[0] || infoPokemons(pokemon).tipagem.tipo1 == fifoFiltroTipo[1])){continue;}
-                }
+            for(let i=24*pagina+1; i<=24*(pagina+1);i++){
+                document.getElementById("Caixa_Pokemon").innerHTML += criarContainer(await infoPokemons(i));
             }
-            
-            document.getElementById("Caixa_Pokemon").innerHTML += criarContainer(infoPokemons(pokemon));
-            x++;
         }
-    }    
-    else{
-        document.getElementById("Caixa_Pokemon").innerHTML += criarContainer(infoPokemons(teste));
     }
-
+    else{
+        console.log("Pokemon em pesquisa");
+        document.getElementById("Caixa_Pokemon").innerHTML += criarContainer(await infoPokemons(nomePokemon));
+    }
+    
 }
 
 
 
 
 
-let infoPokemons = function(Pokemon){
+async function infoPokemons(Pokemon){
+    const url_Species = `http://pokeapi.co/api/v2/pokemon-species/${Pokemon}`;
+    const dados1 = await fetch(url_Species);
+    var specie = await dados1.json();
+    
+    
+    const dados2 = await fetch(specie.varieties[0].pokemon.url);
+    var Pokemon = await dados2.json();
+    console.log(Pokemon)
     return {
-            ["nome"]:Pokemon.name,
+            ["entrada"]:specie.order,
+            ["nome"]:specie.name,
             ["imagem"]:{"normal":Pokemon.sprites.other["official-artwork"]["front_default"],"shiny":Pokemon.sprites.other["official-artwork"]["front_shiny"]},
             ["tipagem"]:{"tipo1":Pokemon.types[0].type['name'],"tipo2":Pokemon.types[1]?.type['name']},
             ["regiao"]:Pokemon.encounters,
             ["geracao"]:Pokemon.game_indices[0].version["name"],
-            
         };
 };
 
-
-
-
-
-async function carregarJson(Pokemon){
-    const url = `http://pokeapi.co/api/v2${Pokemon}`;
-
-    const dados = await fetch(url);
-    const jason = await dados.json();
-    return jason;
-}
 
 
 
@@ -307,7 +311,7 @@ function atualizarAparenciaFiltroTipos(){
 async function popUpInfo(PokemonName) {
     console.log("call")
     document.getElementById("PopUpInfo").style.display = "inline-block";
-    let info = infoPokemons(await carregarJson("/pokemon/"+PokemonName));
+    let info = infoPokemons(await carregarJson("/pokemon-species/"+PokemonName));
     console.log(info)
     document.getElementById("imagemPopUp").src= info.imagem.normal;
     document.getElementById("pokemonNamePopUp").innerHTML= info.nome;
