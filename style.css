@@ -241,14 +241,12 @@ input::-webkit-inner-spin-button {
 
 
     #ButtonDeco{
-        width: 80px;
-        height: 80px;
+        width: 110px;
+        height: 110px;
         position: fixed;
-        background-color: rgba(165, 42, 42, 1);
-
-        margin: 11% -4.5%;
-
-        border: 20px double rgba(123, 32, 32);
+        background-color: rgb(165, 42, 42);
+        margin: 160px -60px;
+        border: 20px double rgb(123, 32, 32);
         border-radius: 100%;
     }
 }

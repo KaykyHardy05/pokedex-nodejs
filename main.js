@@ -151,13 +151,27 @@ async function infoPokemons(Pokemon){
 
     for(let traducao of specie.flavor_text_entries){
         if(traducao.language.name !== "en"){continue}
-        descricao =traducao.flavor_text
-        .replace(/\f/g, " ")
-        .replace("é", "E")
-        .replace(/\n/g, "</p><p>");
-        if(traducao.language.name === "en"){break};
+            descricao = traducao.flavor_text
+                .replace(/[\f\n]/g, " ")
+                .replace(/é/g, " ");
+        
+        if(traducao.language.name === "en"){break}; 
     }
 
+    var variantes={"x":null,"y":null,"z":null, "mega":null, "gmax":null}
+    console.log(`Variantes=${variantes.x} | ${variantes.y} | ${variantes.z} | ${variantes.gmax}`)
+    for(let variante of specie.varieties){
+        if(Pokemon.name == "charizard"){console.log(variante.pokemon.name[variante.pokemon.name.length-1])}
+        // criar for()
+        if(variante.pokemon.name[variante.pokemon.name.length-6] === "m" &&
+           variante.pokemon.name[variante.pokemon.name.length-5] === "e" &&
+           variante.pokemon.name[variante.pokemon.name.length-4] === "g" &&
+           variante.pokemon.name[variante.pokemon.name.length-3] === "a" )
+           {
+                console.log(variante.pokemon.name)
+           }
+    }
+    if(Pokemon.name == "charizard"){console.log(`Variantes=${variantes.x} | ${variantes.y} | ${variantes.z} | ${variantes.gmax}`)}
     return {
             ["entrada"]:specie.order,
             ["nome"]:Pokemon.name,
@@ -170,6 +184,7 @@ async function infoPokemons(Pokemon){
             ["tipagem"]:{"tipo1" : Pokemon.types[0].type['name'],
                          "tipo2" : Pokemon.types[1]?.type['name']
                         },
+            ["alternativo"]:{"mega-x": variantes.x??null, "mega-y": variantes.y??null, "mega-z":variantes.z??null, "gigantamax":variantes.gmax??null},                        
             ["status"]:{[`${Pokemon.stats[0].stat.name.replace("-", "_")}`] : Pokemon.stats[0].base_stat,
                         [`${Pokemon.stats[1].stat.name.replace("-", "_")}`] : Pokemon.stats[1].base_stat,
                         [`${Pokemon.stats[2].stat.name.replace("-", "_")}`] : Pokemon.stats[2].base_stat,
@@ -362,12 +377,30 @@ async function popUpInfo(PokemonName) {
     }else{}
     document.getElementById("filtro_undefined_PopUp")?.remove();
     document.getElementById("statusPopUp").innerHTML=`
-                    <div id="hp">Hp: ${info.status["hp"]}</div>
-                    <div id="attack">Atk: ${info.status["attack"]}</div>
-                    <div id="defense">Defense: ${info.status["defense"]}</div>
-                    <div id="sp_attack">Sp Atk: ${info.status["special_attack"]}</div>
-                    <div id="sp_defense">Sp Defense: ${info.status["special_defense"]}</div>
-                    <div id="speed">Sp Defense: ${info.status["speed"]}</div>
+                    <div id="hp">Hp: ${info.status["hp"]}
+                        <div id="hp2" style="background: linear-gradient(90deg, rgba(175,175,175,1) ${(info.status["hp"]/255)*100}%, rgba(45,45,45,1) ${(info.status["hp"]/255)*100}%); border:3px solid rgb(45,45,45); border-radius:15px; height:10px">
+                        </div>
+                    </div>
+                    <div id="attack">Atk: ${info.status["attack"]}
+                        <div id="attack2" style="background: linear-gradient(90deg, rgba(175,175,175,1) ${(info.status["attack"]/255)*100}%, rgba(45,45,45,1) ${(info.status["attack"]/255)*100}%); border:3px solid rgb(45,45,45); border-radius:15px; height:10px">
+                        </div>
+                    </div>
+                    <div id="defense">Defense: ${info.status["defense"]}
+                        <div id="defense2" style="background: linear-gradient(90deg, rgba(175,175,175,1) ${(info.status["defense"]/255)*100}%, rgba(45,45,45,1)  ${(info.status["defense"]/255)*100}%); border:3px solid rgb(45,45,45); border-radius:15px; height:10px">
+                        </div>
+                    </div>
+                    <div id="sp_attack">Sp Atk: ${info.status["special_attack"]}
+                        <div id="sp_attack2" style="background: linear-gradient(90deg, rgba(175,175,175,1) ${(info.status["special_attack"]/255)*100}%, rgba(45,45,45,1) ${(info.status["special_attack"]/255)*100}%); border:3px solid rgb(45,45,45); border-radius:15px; height:10px">
+                        </div>    
+                    </div>
+                    <div id="sp_defense">Sp Defense: ${info.status["special_defense"]}
+                        <div id="sp_defense2" style="background: linear-gradient(90deg, rgba(175,175,175,1) ${(info.status["special_defense"]/255)*100}%, rgba(45,45,45,1)${(info.status["special_defense"]/255)*100}%); border:3px solid rgb(45,45,45); border-radius:15px; height:10px">
+                        </div>
+                    </div>
+                    <div id="speed">Speed: ${info.status["speed"]}
+                        <div id="speed2" style="background: linear-gradient(90deg, rgba(175,175,175,1) ${(info.status["speed"]/255)*100}%, rgba(45,45,45,1) ${(info.status["speed"]/255)*100}%); border:3px solid rgb(45,45,45); border-radius:15px; height:10px">
+                        </div>
+                    </div>
                 `;
     document.getElementById("descricaoPopUp").innerHTML= info.descricao
 }
