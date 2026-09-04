@@ -158,20 +158,34 @@ async function infoPokemons(Pokemon){
         if(traducao.language.name === "en"){break}; 
     }
 
+
     var variantes={"x":null,"y":null,"z":null, "mega":null, "gmax":null}
-    console.log(`Variantes=${variantes.x} | ${variantes.y} | ${variantes.z} | ${variantes.gmax}`)
     for(let variante of specie.varieties){
-        if(Pokemon.name == "charizard"){console.log(variante.pokemon.name[variante.pokemon.name.length-1])}
-        // criar for()
-        if(variante.pokemon.name[variante.pokemon.name.length-6] === "m" &&
-           variante.pokemon.name[variante.pokemon.name.length-5] === "e" &&
-           variante.pokemon.name[variante.pokemon.name.length-4] === "g" &&
-           variante.pokemon.name[variante.pokemon.name.length-3] === "a" )
-           {
-                console.log(variante.pokemon.name)
-           }
+        if(Pokemon.name == "charizard" || Pokemon.name == "venusaur"|| Pokemon.name == "blastoise"){}else{continue}
+        if(variante.is_default){continue}
+        console.log(variante.pokemon.name)
+        if(variante.pokemon.name.includes("-mega")){
+            console.log("contem mega")
+            if(variante.pokemon.name.includes("-mega-x")){
+                console.log("X")
+                variantes.x = variante.pokemon.name
+            }else
+            if(variante.pokemon.name.includes("-mega-y")){
+                console.log("Y")
+                variantes.y = variante.pokemon.name
+            }else
+            if(variante.pokemon.name.includes("-mega-z")){
+                console.log("Z")
+                variantes.z = variante.pokemon.name
+            }
+        }else{
+            variantes.mega= variante.pokemon.name
+        }
+        variantes.gmax    = variante.pokemon.name.includes("-gmax");        
     }
-    if(Pokemon.name == "charizard"){console.log(`Variantes=${variantes.x} | ${variantes.y} | ${variantes.z} | ${variantes.gmax}`)}
+
+
+    if(Pokemon.name == "charizard" || Pokemon.name == "venusaur"|| Pokemon.name == "blastoise"){}else{console.log(`Variantes= ${variantes.x} | ${variantes.y} | ${variantes.z} | ${variantes.mega} | ${variantes.gmax}`)}
     return {
             ["entrada"]:specie.order,
             ["nome"]:Pokemon.name,
