@@ -159,33 +159,47 @@ async function infoPokemons(Pokemon){
     }
 
 
-    var variantes={"x":null,"y":null,"z":null, "mega":null, "gmax":null}
+    let variantes={"x":null,"y":null,"z":null, "mega":null, "gmax":null}
+    
     for(let variante of specie.varieties){
-        if(Pokemon.name == "charizard" || Pokemon.name == "venusaur"|| Pokemon.name == "blastoise"){}else{continue}
-        if(variante.is_default){continue}
+        if(variante.is_default || variante.pokemon.name.includes("-totem")){continue}
         console.log(variante.pokemon.name)
+
         if(variante.pokemon.name.includes("-mega")){
-            console.log("contem mega")
+            const url2 = `http://pokeapi.co/api/v2/pokemon-form/${variante.pokemon.name}`
+            const dados3 = await fetch(url2);
+            var poke_form = await dados3.json();
+
+            const url3 = poke_form.trigger_conditions[0].url;
+            const dados4 = await fetch(url3);
+            var item = await dados4.json();
+            
             if(variante.pokemon.name.includes("-mega-x")){
-                console.log("X")
-                variantes.x = variante.pokemon.name
+                variantes.x = item.sprites.default;
             }else
             if(variante.pokemon.name.includes("-mega-y")){
-                console.log("Y")
-                variantes.y = variante.pokemon.name
+                variantes.y = item.sprites.default;
             }else
             if(variante.pokemon.name.includes("-mega-z")){
-                console.log("Z")
-                variantes.z = variante.pokemon.name
+                item.sprites.default;
+            }else{
+                variantes.mega= item.sprites.default;
             }
-        }else{
-            variantes.mega= variante.pokemon.name
         }
-        variantes.gmax    = variante.pokemon.name.includes("-gmax");        
+        
+        if(variante.pokemon.name.includes("-gmax")){
+            const url2 = `http://pokeapi.co/api/v2/item/1141`
+            const dados3 = await fetch(url2);
+            var poke_form = await dados3.json();
+
+            console.log(poke_form)
+            
+            variantes.gmax = "images/giganta_max-removebg.png";
+        }
+        
     }
 
-
-    if(Pokemon.name == "charizard" || Pokemon.name == "venusaur"|| Pokemon.name == "blastoise"){}else{console.log(`Variantes= ${variantes.x} | ${variantes.y} | ${variantes.z} | ${variantes.mega} | ${variantes.gmax}`)}
+    
     return {
             ["entrada"]:specie.order,
             ["nome"]:Pokemon.name,
@@ -198,7 +212,7 @@ async function infoPokemons(Pokemon){
             ["tipagem"]:{"tipo1" : Pokemon.types[0].type['name'],
                          "tipo2" : Pokemon.types[1]?.type['name']
                         },
-            ["alternativo"]:{"mega-x": variantes.x??null, "mega-y": variantes.y??null, "mega-z":variantes.z??null, "gigantamax":variantes.gmax??null},                        
+            ["alternativo"]:{"mega":variantes.mega??null, "mega-x": variantes.x??null, "mega-y": variantes.y??null, "mega-z":variantes.z??null, "gigantamax":variantes.gmax??null},                        
             ["status"]:{[`${Pokemon.stats[0].stat.name.replace("-", "_")}`] : Pokemon.stats[0].base_stat,
                         [`${Pokemon.stats[1].stat.name.replace("-", "_")}`] : Pokemon.stats[1].base_stat,
                         [`${Pokemon.stats[2].stat.name.replace("-", "_")}`] : Pokemon.stats[2].base_stat,
@@ -367,6 +381,12 @@ function ClosePopUpInfo(){
 }
 
 
+function expandirMegas() {
+    document.getElementById("ID_ListaDeMegas").classList.toggle("mostrar");
+}
+
+
+
 
 async function popUpInfo(PokemonName) {
     console.log("call")
@@ -375,6 +395,18 @@ async function popUpInfo(PokemonName) {
 
     document.getElementById("pokeEntryPopUp").innerHTML=info.entrada;
     document.getElementById("imagemPopUp").children[0].src= info.imagem.normal;
+    if(info.alternativo["mega-x"] || info.alternativo["mega-y"] || info.alternativo["mega-z"] || info.alternativo["mega"]){
+        document.getElementById("ID_ListaDeMegas").innerHTML="";
+        document.getElementById("variantes_mega").style.display="unset"
+        for(let variantes in info.alternativo){
+            if(variantes == "gigantamax" || info.alternativo[variantes] == null){continue}
+            document.getElementById("ID_ListaDeMegas").innerHTML+=`
+            <a>
+                <img src="${info.alternativo[variantes]} alt="${variantes}">
+            </a>
+            `
+        }
+    }
     document.getElementById("pokemonNamePopUp").innerHTML= info.nome;
     document.getElementById("typesPopUp").innerHTML="";
     document.getElementById("typesPopUp").innerHTML+=`

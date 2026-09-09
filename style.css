@@ -278,6 +278,49 @@ input::-webkit-inner-spin-button {
     grid-column: 1 / 6;
     grid-row: 1 / 10; /*1/6*/
 }
+
+#variantes_mega{
+    height: 40px;    
+    width: 40px;
+
+    grid-column: 1 / 2;
+    grid-row: 8 / 9;
+      
+    position: relative;
+    display: inline-block;
+}
+
+.botaoDropDown_Mega{
+    height: 30px;    
+    width: 30px;
+    background: none;
+
+    border: 1px solid rgba(125,125,125,0.1);
+    border-radius: 100%;
+}
+.botaoDropDown_Mega:hover, .botaoDropDown_Mega:focus {
+  background-color: rgba(  0,   0,   0, 0.05);
+}
+.CLASS_ListaDeMegas {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+
+    a {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    }
+    a:hover {background-color: rgb(225, 225, 225);}
+}
+
+.mostrar {display:block;}
+
+
 #pokemonNamePopUp{
     font-size: 32px;
     justify-self: center;
@@ -315,3 +358,6 @@ input::-webkit-inner-spin-button {
     border-radius: 25px;
     text-align: center;
 }
+
+
+
