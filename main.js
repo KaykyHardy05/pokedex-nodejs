@@ -192,7 +192,7 @@ async function infoPokemons(Pokemon){
             const dados3 = await fetch(url2);
             var poke_form = await dados3.json();
 
-            console.log(poke_form)
+           
             
             variantes.gmax = "images/giganta_max-removebg.png";
         }
@@ -204,7 +204,7 @@ async function infoPokemons(Pokemon){
             ["entrada"]:specie.order,
             ["nome"]:Pokemon.name,
             ["regiao"]:Pokemon.encounters,
-            ["geracao"]:Pokemon.game_indices[0].version["name"],
+            ["geracao"]:Pokemon.game_indices[0]?.version["name"],
             ["descricao"]:descricao,
             ["imagem"]:{"normal" : Pokemon.sprites.other["official-artwork"]["front_default"],
                         "shiny"  : Pokemon.sprites.other["official-artwork"]["front_shiny"]
@@ -389,24 +389,36 @@ function expandirMegas() {
 
 
 async function popUpInfo(PokemonName) {
+    console.log(document.getElementById("ID_ListaDeMegas").classList[1] == "mostrar");
+    if(document.getElementById("ID_ListaDeMegas").classList[1] == "mostrar"){
+        document.getElementById("ID_ListaDeMegas").classList.toggle("mostrar");
+    }
     console.log("call")
     document.getElementById("PopUpInfo").style.display = "inline-block";
     let info = await infoPokemons(PokemonName);
 
     document.getElementById("pokeEntryPopUp").innerHTML=info.entrada;
     document.getElementById("imagemPopUp").children[0].src= info.imagem.normal;
+
     if(info.alternativo["mega-x"] || info.alternativo["mega-y"] || info.alternativo["mega-z"] || info.alternativo["mega"]){
         document.getElementById("ID_ListaDeMegas").innerHTML="";
         document.getElementById("variantes_mega").style.display="unset"
         for(let variantes in info.alternativo){
             if(variantes == "gigantamax" || info.alternativo[variantes] == null){continue}
+            
             document.getElementById("ID_ListaDeMegas").innerHTML+=`
-            <a>
-                <img src="${info.alternativo[variantes]} alt="${variantes}">
+            <a style="font-size:12px;" onclick="popUpInfo('${info.nome.replace(/(?:-)mega(?:-[xyz])?/i, "")}-${variantes}')">
+                <img src="${info.alternativo[variantes]}" alt="${variantes}" style="height:40px;width:40px;margin-right:-5px;margin-left:-5px;">
+                Mega ${info.nome.replace(/(?:-)mega(?:-[xyz])?/i, "")} ${variantes.replace("mega-x", "X").replace("mega-y", "Y").replace("mega-z", "Z")}
             </a>
             `
         }
+    }else{document.getElementById("variantes_mega").style.display="none"}
+    
+    if(info.alternativo["gigantamax"]){
+        document.getElementById("ID_Dynamax").style.display="unset";
     }
+    document.
     document.getElementById("pokemonNamePopUp").innerHTML= info.nome;
     document.getElementById("typesPopUp").innerHTML="";
     document.getElementById("typesPopUp").innerHTML+=`
