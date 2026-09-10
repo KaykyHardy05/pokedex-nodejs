@@ -84,7 +84,7 @@ const buscaApi = async() => {
         console.log(fifoFiltroTipo)
         if(fifoFiltroTipo[1]!=null){// Verifica se tem filtros de Tipo de Pokemon
             filtragem= true;
-            const url_Tipos = `https://pokeapi.co/api/v2/type/${fifoFiltroTipo[1]}/`;
+            const url_Tipos = `http://pokeapi.co/api/v2/type/${fifoFiltroTipo[1]}/`;
             const dadoTipos = await fetch(url_Tipos);
             tipos = await dadoTipos.json();
         }
@@ -140,7 +140,7 @@ const buscaApi = async() => {
 
 
 async function infoPokemons(Pokemon){
-    const url_Poke = `https://pokeapi.co/api/v2/pokemon/${Pokemon}`;
+    const url_Poke = `http://pokeapi.co/api/v2/pokemon/${Pokemon}`;
     const dados1 = await fetch(url_Poke);
     var Pokemon = await dados1.json();
     
@@ -166,7 +166,7 @@ async function infoPokemons(Pokemon){
         console.log(variante.pokemon.name)
 
         if(variante.pokemon.name.includes("-mega")){
-            const url2 = `https://pokeapi.co/api/v2/pokemon-form/${variante.pokemon.name}`
+            const url2 = `http://pokeapi.co/api/v2/pokemon-form/${variante.pokemon.name}`
             const dados3 = await fetch(url2);
             var poke_form = await dados3.json();
 
@@ -188,7 +188,7 @@ async function infoPokemons(Pokemon){
         }
         
         if(variante.pokemon.name.includes("-gmax")){
-            const url2 = `https://pokeapi.co/api/v2/item/1141`
+            const url2 = `http://pokeapi.co/api/v2/item/1141`
             const dados3 = await fetch(url2);
             var poke_form = await dados3.json();
 
@@ -275,7 +275,7 @@ function avancar(){
 
 
 async function filtros(){
-    const url_Tipos = `https://pokeapi.co/api/v2/type`;
+    const url_Tipos = `http://pokeapi.co/api/v2/type`;
     const dadoTipos = await fetch(url_Tipos);
     const listaTipos= await dadoTipos.json();
     const div=document.getElementById("Caixa_Filtro");
